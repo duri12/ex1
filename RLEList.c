@@ -67,9 +67,12 @@ RLEListResult RLEListRemove(RLEList list, int index){
 char RLEListGet(RLEList list, int index, RLEListResult *result){
     if(list == NULL){
         if (result != NULL){
-            *result = RLE_LIST_NULL_ARGUMENT
+            *result = RLE_LIST_NULL_ARGUMENT;
         }
         return 0 ;
+    }
+    if (list->letter=='\0'){
+        return RLEListGet(list->node,index,result);
     }
     if(index < list->count){
         if(result != NULL){
@@ -86,10 +89,35 @@ char RLEListGet(RLEList list, int index, RLEListResult *result){
     return RLEListGet(list->node,index-list->count , result );
 }
 
-char* RLEListExportToString(RLEList list, RLEListResult* result){
+char* RLEListExportToString(RLEList list, RLEListResult* result){ // TODO:!!!!!!!!!!!
+    if (list == NULL){
+        if (result != NULL){
+            *result = RLE_LIST_NULL_ARGUMENT;
+        }
+        return NULL;
+    }
+    if(list->letter == '\0'){
+        return  RLEListExportToString(list->node , result);
+    }
+    for (int i = 0; i < list->count; i++) {
 
+    }
+    if(list->node == NULL){
+
+    }
 }
 
-RLEListResult RLEListMap(RLEList list, MapFunction map_function){
-
+RLEListResult RLEListMap(RLEList list, MapFunction map_function)
+{
+    if (list == NULL){
+        return RLE_LIST_NULL_ARGUMENT;
+    }
+    if(list->letter == '\0'){
+        return RLEListMap(list->node , map_function);
+    }
+    list->letter = map_function(list->letter);
+    if(list->node == NULL){
+        return RLE_LIST_SUCCESS;
+    }
+    return  RLEListMap(list->node , map_function);
 }
