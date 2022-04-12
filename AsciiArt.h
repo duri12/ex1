@@ -30,6 +30,13 @@ RLEList asciiArtRead(FILE* in_stream);
 */
 RLEListResult asciiArtPrint(RLEList list, FILE *out_stream);
 
-
+/*
+ *   asciiArtPrintEncoded: prints the image encoded into the file and prints the result
+ * @param list - The List containing the image.
+ *  @param out_stream -
+ *  @return RLEList that contains the content of the file.
+ *
+ */
+RLEListResult asciiArtPrintEncoded(RLEList list, FILE *out_stream);
 
 #endif //MTM_EX1_ASCIIART_H
