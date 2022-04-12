@@ -37,6 +37,15 @@ RLEListResult RLEListAppend(RLEList list, char value)
         return RLE_LIST_NULL_ARGUMENT;
     }
     if(list->node == NULL){
+        if(list->count == 0 && list->letter=='\0'){
+            list->letter =value;
+            list->count = 1;
+            return RLE_LIST_SUCCESS;
+        }
+        if(list->letter == value){
+            list->count ++ ;
+            return RLE_LIST_SUCCESS;
+        }
         RLEList newNode = RLEListCreate();
         if(newNode == NULL){
             return RLE_LIST_OUT_OF_MEMORY;
@@ -104,23 +113,6 @@ char RLEListGet(RLEList list, int index, RLEListResult *result){
     return RLEListGet(list->node,index-list->count , result );
 }
 
-char* RLEListExportToString(RLEList list, RLEListResult* result){ // TODO:!!!!!!!!!!!
-    if (list == NULL){
-        if (result != NULL){
-            *result = RLE_LIST_NULL_ARGUMENT;
-        }
-        return NULL;
-    }
-    if(list->letter == '\0'){
-        return  RLEListExportToString(list->node , result);
-    }
-    for (int i = 0; i < list->count; i++) {
-
-    }
-    if(list->node == NULL){
-
-    }
-}
 
 RLEListResult RLEListMap(RLEList list, MapFunction map_function)
 {
@@ -138,7 +130,7 @@ RLEListResult RLEListMap(RLEList list, MapFunction map_function)
 }
 int countNodes(RLEList list) {
     int count=0;
-    while(list!=null) {
+    while(list!=NULL) {
         if(list->count!=0) {
             count++;
         }
@@ -146,24 +138,26 @@ int countNodes(RLEList list) {
     }
     return count;
 }
-int countSpaceForNumbers(RLEList list) {
-    int copyNum;
-    int count=0;
-    while(list!=null) {
-        count += countSpaceForSpecificNumber(list);
-        list = list->node;
-    }
-    return count;
-}
+
 int countSpaceForSpecificNumber(RLEList list) {
     int count=0;
     int copyNum = list->count;
-    while(copynum!=0) {
+    while(copyNum!=0) {
         copyNum = copyNum/10;
         count++;
     }
     return count;
 }
+
+int countSpaceForNumbers(RLEList list) {
+    int count=0;
+    while(list!=NULL) {
+        count += countSpaceForSpecificNumber(list);
+        list = list->node;
+    }
+    return count;
+}
+
 char* RLEListExportToString(RLEList list, RLEListResult* result) {
     if(list==NULL) {
         if(result != NULL){
@@ -171,12 +165,12 @@ char* RLEListExportToString(RLEList list, RLEListResult* result) {
         }
         return NULL;
     }
-    char* str = (char*)(malloc(sizeof(char)* countNodes(list)*2+countSpaceForNumers(list)+1));
-    if(str == null){
+    char* str = (char*)(malloc(sizeof(char)* countNodes(list)*2+countSpaceForNumbers(list)+1));
+    if(str == NULL){
         *result = RLE_LIST_OUT_OF_MEMORY;
     }
     char* savePtrStr = str;
-    while(list!=null) {
+    while(list!=NULL) {
         if(list->count!=0) {
             *str = list->letter;
             str++;
