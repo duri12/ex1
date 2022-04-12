@@ -132,3 +132,58 @@ RLEListResult RLEListMap(RLEList list, MapFunction map_function)
     }
     return  RLEListMap(list->node , map_function);
 }
+int countNodes(RLEList list) {
+    int count=0;
+    while(list!=null) {
+        if(list->count!=0) {
+            count++;
+        }
+        list = list->node;
+    }
+    return count;
+}
+int countSpaceForNumbers(RLEList list) {
+    int copyNum;
+    int count=0;
+    while(list!=null) {
+        count += countSpaceForSpecificNumber(list);
+        list = list->node;
+    }
+    return count;
+}
+int countSpaceForSpecificNumber(RLEList list) {
+    int count=0;
+    int copyNum = list->count;
+    while(copynum!=0) {
+        copyNum = copyNum/10;
+        count++;
+    }
+    return count;
+}
+char* RLEListExportToString(RLEList list, RLEListResult* result) {
+    if(list==NULL) {
+        if(result != NULL){
+            *result =  RLE_LIST_NULL_ARGUMENT;
+        }
+        return NULL;
+    }
+    char* str = (char*)(malloc(sizeof(char)* countNodes(list)*2+countSpaceForNumers(list)+1));
+    if(str == null){
+        *result = RLE_LIST_OUT_OF_MEMORY;
+    }
+    char* savePtrStr = str;
+    while(list!=null) {
+        if(list->count!=0) {
+            *str = list->letter;
+            str++;
+            itoa(list->count,str,10);
+            str += countSpaceForSpecificNumber(list);
+            *str = '\n';
+            str++;
+        }
+        list = list->node;
+    }
+    *str = '\0';
+    *result = RLE_LIST_SUCCESS;
+    return savePtrStr;
+}
