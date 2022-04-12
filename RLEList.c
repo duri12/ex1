@@ -6,7 +6,7 @@ struct RLEList_t
     char letter;
     struct RLEList_t* node;
 };
-
+//TODO: fix count not letter
 //implement the functions here
 RLEList RLEListCreate()
 {
@@ -32,10 +32,20 @@ void RLEListDestroy(RLEList list)
 
 RLEListResult RLEListAppend(RLEList list, char value)
 {
-    RLEList newNode = RLEListCreate();
-    newNode->letter = value;
-    newNode->count = 1;
-    list->node = newNode;
+    if (list == NULL){
+        return RLE_LIST_NULL_ARGUMENT;
+    }
+    if(list->node == NULL){
+        RLEList newNode = RLEListCreate();
+        if(newNode == NULL){
+            return RLE_LIST_OUT_OF_MEMORY;
+        }
+        newNode->letter = value;
+        newNode->count = 1;
+        list->node = newNode;
+        return RLE_LIST_SUCCESS
+    }
+    return RLEListAppend(list->node, value);
 }
 
 
