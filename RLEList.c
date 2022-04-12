@@ -30,7 +30,7 @@ void RLEListDestroy(RLEList list)
     free(list);
 }
 
-//hi i am here
+//hi i
 RLEListResult RLEListAppend(RLEList list, char value)
 {
     if (list == NULL){
