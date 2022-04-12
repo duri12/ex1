@@ -6,7 +6,7 @@ struct RLEList_t
     char letter;
     struct RLEList_t* node;
 };
-//TODO: fix count not letter
+
 //implement the functions here
 RLEList RLEListCreate()
 {
@@ -30,7 +30,7 @@ void RLEListDestroy(RLEList list)
     free(list);
 }
 
-//hi i
+
 RLEListResult RLEListAppend(RLEList list, char value)
 {
     if (list == NULL){
@@ -44,7 +44,7 @@ RLEListResult RLEListAppend(RLEList list, char value)
         newNode->letter = value;
         newNode->count = 1;
         list->node = newNode;
-        return RLE_LIST_SUCCESS
+        return RLE_LIST_SUCCESS;
     }
     return RLEListAppend(list->node, value);
 }
@@ -65,6 +65,9 @@ RLEListResult RLEListRemove(RLEList list, int index){
     if(list == NULL){
         return RLE_LIST_NULL_ARGUMENT;
     }
+    if(index < 0){
+        return RLE_LIST_INDEX_OUT_OF_BOUNDS;// to ask piaza
+    }
     if(index < list->count){
         list->count --;
         return RLE_LIST_SUCCESS;
@@ -82,7 +85,13 @@ char RLEListGet(RLEList list, int index, RLEListResult *result){
         }
         return 0 ;
     }
-    if (list->letter=='\0'){
+    if(list->node == NULL){
+        if (result != NULL){
+            *result = RLE_LIST_INDEX_OUT_OF_BOUNDS;
+        }
+        return 0 ;
+    }
+    if (list->count == 0 ){
         return RLEListGet(list->node,index,result);
     }
     if(index < list->count){
@@ -91,12 +100,7 @@ char RLEListGet(RLEList list, int index, RLEListResult *result){
         }
         return list->letter;
     }
-    if(list->node == NULL){
-        if (result != NULL){
-            *result = RLE_LIST_INDEX_OUT_OF_BOUNDS;
-        }
-        return 0 ;
-    }
+
     return RLEListGet(list->node,index-list->count , result );
 }
 
@@ -123,7 +127,7 @@ RLEListResult RLEListMap(RLEList list, MapFunction map_function)
     if (list == NULL){
         return RLE_LIST_NULL_ARGUMENT;
     }
-    if(list->letter == '\0'){
+    if(list->count==0){
         return RLEListMap(list->node , map_function);
     }
     list->letter = map_function(list->letter);
