@@ -128,7 +128,7 @@ RLEListResult RLEListMap(RLEList list, MapFunction map_function)
     }
     return  RLEListMap(list->node , map_function);
 }
-int countNodes(RLEList list) {
+static int countNodes(RLEList list) {
     int count=0;
     while(list!=NULL) {
         if(list->count!=0) {
@@ -139,7 +139,7 @@ int countNodes(RLEList list) {
     return count;
 }
 
-int countSpaceForSpecificNumber(RLEList list) {
+static int countSpaceForSpecificNumber(RLEList list) {
     int count=0;
     int copyNum = list->count;
     while(copyNum!=0) {
@@ -149,7 +149,7 @@ int countSpaceForSpecificNumber(RLEList list) {
     return count;
 }
 
-int countSpaceForNumbers(RLEList list) {
+static int countSpaceForNumbers(RLEList list) {
     int count=0;
     while(list!=NULL) {
         count += countSpaceForSpecificNumber(list);
