@@ -5,9 +5,14 @@ RLEList asciiArtRead(FILE* in_stream){
         return NULL;
     }
     RLEList list =RLEListCreate();
+    if(list==NULL){
+        return list;
+    }
     char letter ;
     while(fscanf(in_stream, "%c",&letter)){
-        RLEListAppend(list,letter);
+        if(RLEListAppend(list,letter) != RLE_LIST_SUCCESS){
+            return NULL;
+        }
     }
     return list;
 }
@@ -17,18 +22,34 @@ RLEListResult asciiArtPrint(RLEList list, FILE *out_stream) {
         return RLE_LIST_NULL_ARGUMENT;
     }
     RLEListResult* result = malloc(sizeof(RLEListResult));
-    char* str = RLEListExportToString(list, result);
-    for(int i=0; i< RLEListSize(list); i++) {
-        fprintf(out_stream, RLEListGet(list, i, result));
+    if(result==NULL) {
+        return RLE_LIST_OUT_OF_MEMORY;
     }
-    return result;
+    int length = RLEListSize(list);
+    if(length==-1){
+        return RLE_LIST_NULL_ARGUMENT;
+    }
+    for(int i=0; i< length ; i++) {
+        if(fprintf(out_stream, "%c" ,RLEListGet(list, i, result))<0){
+            return RLE_LIST_ERROR;
+        }
+        if(*result != RLE_LIST_SUCCESS){
+            return *result;
+        }
+    }
+    return *result;
 }
 RLEListResult asciiArtPrintEncoded(RLEList list, FILE *out_stream) {
+    if(out_stream==NULL || list==NULL){
+        return RLE_LIST_NULL_ARGUMENT;
+    }
     RLEListResult* result = malloc(sizeof(RLEListResult));
     char* str = RLEListExportToString(list, result);
     if(result==NULL) {
-        return result;
+        return RLE_LIST_OUT_OF_MEMORY;
     }
-    fprintf(out_stream, str);
-    return result;
+    if(fprintf(out_stream, "%s" , str)<0){
+        return RLE_LIST_ERROR;
+    }
+    return *result;
 }

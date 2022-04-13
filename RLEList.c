@@ -165,7 +165,8 @@ char* RLEListExportToString(RLEList list, RLEListResult* result) {
         }
         return NULL;
     }
-    char* str = (char*)(malloc(sizeof(char)* countNodes(list)*2+countSpaceForNumbers(list)+1));
+    int sizeOfMemory = sizeof(char)* countNodes(list)*2+countSpaceForNumbers(list)+1;
+    char* str = (char*)(malloc(sizeOfMemory));
     if(str == NULL){
         *result = RLE_LIST_OUT_OF_MEMORY;
     }
