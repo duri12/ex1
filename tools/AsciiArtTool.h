@@ -24,17 +24,17 @@ RLEList asciiArtRead(FILE* in_stream);
 *   asciiArtPrint: parse the image that is writen in a RLEList form
 *   and prints the result.
 * @param list - The List containing the image.
-* @param out_stream
+* @param out_stream- The file to write to .
 * @return
-* 	RLEList that contains the content of the file.
+* 	RLEListResult that contains result.
 */
 RLEListResult asciiArtPrint(RLEList list, FILE *out_stream);
 
 /**
  *   asciiArtPrintEncoded: prints the image encoded into the file and prints the result
  * @param list - The List containing the image.
- *  @param out_stream -
- *  @return RLEList that contains the content of the file.
+ *  @param out_stream - the file to write to .
+ *  @return RLEListResult that contains result.
  *
  */
 RLEListResult asciiArtPrintEncoded(RLEList list, FILE *out_stream);
