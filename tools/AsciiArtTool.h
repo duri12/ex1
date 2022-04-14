@@ -2,9 +2,9 @@
 // Created by eyal on 11/04/2022.
 //
 
-#ifndef MTM_EX1_ASCIIART_H
-#define MTM_EX1_ASCIIART_H
-#include "RLEList.h"
+#ifndef MTM_EX1_ASCIIARTTOOL_H
+#define MTM_EX1_ASCIIARTTOOL_H
+#include "../RLEList.h"
 
 
 
@@ -30,7 +30,7 @@ RLEList asciiArtRead(FILE* in_stream);
 */
 RLEListResult asciiArtPrint(RLEList list, FILE *out_stream);
 
-/*
+/**
  *   asciiArtPrintEncoded: prints the image encoded into the file and prints the result
  * @param list - The List containing the image.
  *  @param out_stream -
@@ -39,4 +39,4 @@ RLEListResult asciiArtPrint(RLEList list, FILE *out_stream);
  */
 RLEListResult asciiArtPrintEncoded(RLEList list, FILE *out_stream);
 
-#endif //MTM_EX1_ASCIIART_H
+#endif //MTM_EX1_ASCIIARTTOOL_H
