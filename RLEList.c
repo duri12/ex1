@@ -123,7 +123,7 @@ char RLEListGet(RLEList list, int index, RLEListResult *result){
         }
         return 0 ;
     }
-    if(list->next == NULL){
+    if(list == NULL){
         if (result != NULL){
             *result = RLE_LIST_INDEX_OUT_OF_BOUNDS;
         }

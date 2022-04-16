@@ -15,6 +15,7 @@ char invertChar(char letter) {
 
 
 int main(int argc, char **argv){
+
     if(argc != 4){
         printf("Usage: ./AsciiArtTool <flags> <source> <target>\n");
     }
@@ -51,7 +52,10 @@ int main(int argc, char **argv){
                 printf("Error: %d" , result);
             }
         }
+        fclose(outStream);
+        fclose(inStream);
         RLEListDestroy(list);
     }
+
     return 0 ;
 }

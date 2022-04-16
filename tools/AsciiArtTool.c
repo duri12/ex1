@@ -9,7 +9,7 @@ RLEList asciiArtRead(FILE* in_stream){
         return list;
     }
     char letter ;
-    while(fscanf(in_stream, "%c",&letter)){
+    while(fscanf(in_stream, "%c",&letter)!= EOF){
         if(RLEListAppend(list,letter) != RLE_LIST_SUCCESS){
             return NULL;
         }
