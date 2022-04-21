@@ -56,9 +56,11 @@ RLEListResult asciiArtPrintEncoded(RLEList list, FILE *out_stream) {
     char* str = RLEListExportToString(list, result);
     if(fprintf(out_stream, "%s" , str)<0){
         free(result);
+        free(str);
         return RLE_LIST_ERROR;
     }
     RLEListResult resultValue = *result;
     free(result);
+    free(str);
     return resultValue;
 }

@@ -1,4 +1,4 @@
-#include "tools/AsciiArtTool.h"
+#include "AsciiArtTool.h"
 #include <stdio.h>
 #include <string.h>
 

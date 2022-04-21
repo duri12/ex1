@@ -9,7 +9,7 @@ struct RLEList_t
 
 RLEList RLEListCreate()
 {
-    RLEList newList = malloc(sizeof(RLEList));
+    RLEList newList = malloc(sizeof(*newList));
     if (newList == NULL){
         return NULL;
     }
@@ -195,7 +195,7 @@ static void intToString(int number , char* buffer){
         }
         firstDigit +=(int)'0';
         buffer[0] = (char)firstDigit;
-        intToString(number/10, buffer ++);
+        intToString(number/10, buffer+1);
     }
 }
 
@@ -224,7 +224,7 @@ char* RLEListExportToString(RLEList list, RLEListResult* result) {
     char* savePtrStr = str;
     while(list!=NULL) {
         if(list->count!=0) {
-            *str = list->letter;
+            str[0] = list->letter;
             str++;
             intToString(list->count,str);
             str += countSpaceForSpecificNumber(list);
