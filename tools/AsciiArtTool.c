@@ -27,29 +27,38 @@ RLEListResult asciiArtPrint(RLEList list, FILE *out_stream) {
     }
     int length = RLEListSize(list);
     if(length==-1){
+        free(result);
         return RLE_LIST_NULL_ARGUMENT;
     }
     for(int i=0; i< length ; i++) {
         if(fprintf(out_stream, "%c" ,RLEListGet(list, i, result))<0){
+            free(result);
             return RLE_LIST_ERROR;
         }
         if(*result != RLE_LIST_SUCCESS){
-            return *result;
+            RLEListResult resultValue = *result;
+            free(result);
+            return resultValue;
         }
     }
-    return *result;
+    RLEListResult resultValue = *result;
+    free(result);
+    return resultValue;
 }
 RLEListResult asciiArtPrintEncoded(RLEList list, FILE *out_stream) {
     if(out_stream==NULL || list==NULL){
         return RLE_LIST_NULL_ARGUMENT;
     }
     RLEListResult* result = malloc(sizeof(RLEListResult));
-    char* str = RLEListExportToString(list, result);
     if(result==NULL) {
         return RLE_LIST_OUT_OF_MEMORY;
     }
+    char* str = RLEListExportToString(list, result);
     if(fprintf(out_stream, "%s" , str)<0){
+        free(result);
         return RLE_LIST_ERROR;
     }
-    return *result;
+    RLEListResult resultValue = *result;
+    free(result);
+    return resultValue;
 }

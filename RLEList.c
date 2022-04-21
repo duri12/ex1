@@ -85,6 +85,10 @@ static RLEListResult RLEListRemoveWithHeadPointer(RLEList head , RLEList current
     if(index < currentNode->count){
         currentNode->count --;
         if(currentNode->count == 0){
+            if(currentNode == head){
+                currentNode->letter = '\0';
+                return RLE_LIST_SUCCESS;
+            }
             RLEList previous = RLEListFindPrevious(head , currentNode);
             if(previous!= NULL &&previous->letter == currentNode->next->letter){
                 previous->count += currentNode->next->count;
@@ -123,12 +127,7 @@ char RLEListGet(RLEList list, int index, RLEListResult *result){
         }
         return 0 ;
     }
-    if(list == NULL){
-        if (result != NULL){
-            *result = RLE_LIST_INDEX_OUT_OF_BOUNDS;
-        }
-        return 0 ;
-    }
+
     if (list->count == 0 ){
         return RLEListGet(list->next,index,result);
     }
@@ -137,6 +136,12 @@ char RLEListGet(RLEList list, int index, RLEListResult *result){
             *result = RLE_LIST_SUCCESS;
         }
         return list->letter;
+    }
+    if(list->next == NULL){
+        if (result != NULL){
+            *result = RLE_LIST_INDEX_OUT_OF_BOUNDS;
+        }
+        return 0 ;
     }
 
     return RLEListGet(list->next,index-list->count , result );
@@ -178,6 +183,23 @@ static int countSpaceForSpecificNumber(RLEList list) {
     return count;
 }
 
+static void intToString(int number , char* buffer){
+    if(number <9){
+        number +=(int)'0';
+        buffer[0] = (char)number;
+    }
+    else{
+        int firstDigit = number ;
+        while(firstDigit > 9){
+            firstDigit /=10;
+        }
+        firstDigit +=(int)'0';
+        buffer[0] = (char)firstDigit;
+        intToString(number/10, buffer ++);
+    }
+}
+
+
 static int countSpaceForNumbers(RLEList list) {
     int count=0;
     while(list!=NULL) {
@@ -204,7 +226,7 @@ char* RLEListExportToString(RLEList list, RLEListResult* result) {
         if(list->count!=0) {
             *str = list->letter;
             str++;
-            itoa(list->count,str,10);
+            intToString(list->count,str);
             str += countSpaceForSpecificNumber(list);
             *str = '\n';
             str++;
