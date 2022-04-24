@@ -17,3 +17,6 @@ AsciiArtTool.o: tool/AsciiArtTool.c tool/AsciiArtTool.h RLEList.c RLEList.h
 RLEList.o: RLEList.c RLEList.h
 	$(COMP) -c $(DEBUG_FLAGS) $(COMP_FLAGS) $*.c
 
+clean:
+	rm -f $(OBJECTS) $(OUT_FILE)
+

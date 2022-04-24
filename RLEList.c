@@ -82,6 +82,9 @@ static RLEList RLEListFindPrevious(RLEList current, RLEList target)
 
 static RLEListResult RLEListRemoveWithHeadPointer(RLEList head , RLEList currentNode ,int index )
 {
+    if(index < 0){
+        return RLE_LIST_INDEX_OUT_OF_BOUNDS;
+    }
     if(index < currentNode->count){
         currentNode->count --;
         if(currentNode->count == 0){
@@ -121,13 +124,18 @@ RLEListResult RLEListRemove(RLEList list, int index){
 }
 
 char RLEListGet(RLEList list, int index, RLEListResult *result){
+    if(index < 0){
+        return  RLE_LIST_INDEX_OUT_OF_BOUNDS;
+    }
     if(list == NULL){
         if (result != NULL){
             *result = RLE_LIST_NULL_ARGUMENT;
         }
         return 0 ;
     }
-
+    if(list->count ==0 && list->next == NULL){
+        return RLE_LIST_INDEX_OUT_OF_BOUNDS;
+    }
     if (list->count == 0 ){
         return RLEListGet(list->next,index,result);
     }
