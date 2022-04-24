@@ -85,6 +85,9 @@ static RLEListResult RLEListRemoveWithHeadPointer(RLEList head , RLEList current
     if(index < 0){
         return RLE_LIST_INDEX_OUT_OF_BOUNDS;
     }
+    if(index == 0 && head->count == 0){
+        return RLE_LIST_INDEX_OUT_OF_BOUNDS;
+    }
     if(index < currentNode->count){
         currentNode->count --;
         if(currentNode->count == 0){
