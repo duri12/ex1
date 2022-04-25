@@ -69,25 +69,14 @@ int RLEListSize(RLEList list)
     return list->count + RLEListSize(list->next);
 }
 
-static RLEList RLEListFindPrevious(RLEList current, RLEList target)
-{
-    if(current->next == NULL){
-        return NULL;
-    }
-    if(current->next == target){
-        return current;
-    }
-    return RLEListFindPrevious(current->next , target);
-}
-
-static RLEListResult RLEListRemoveWithHeadPointer(RLEList head , RLEList currentNode ,int index )
+static RLEListResult RLEListRemoveWithHeadPointer(RLEList head , RLEList currentNode , RLEList previous ,int index )
 {
     if(index < 0){
         return RLE_LIST_INDEX_OUT_OF_BOUNDS;
     }
     if(index == 0 && head->count == 0){
         if(head->next != NULL){
-            return RLEListRemoveWithHeadPointer(head->next, head->next,index);
+            return RLEListRemoveWithHeadPointer(head->next, head->next,head->next,index);
         }
         return RLE_LIST_INDEX_OUT_OF_BOUNDS;
     }
@@ -98,11 +87,12 @@ static RLEListResult RLEListRemoveWithHeadPointer(RLEList head , RLEList current
                 currentNode->letter = '\0';
                 return RLE_LIST_SUCCESS;
             }
-            RLEList previous = RLEListFindPrevious(head , currentNode);
-            if(previous!= NULL &&previous->letter == currentNode->next->letter){
+            if(previous!= NULL && currentNode->next !=NULL&&previous->letter == currentNode->next->letter){
                 previous->count += currentNode->next->count;
                 previous->next = currentNode->next->next;
-                free(currentNode->next);
+                if(currentNode->next != NULL){
+                    free(currentNode->next);
+                }
                 free(currentNode);
             }
             else if (previous!=NULL)
@@ -116,7 +106,10 @@ static RLEListResult RLEListRemoveWithHeadPointer(RLEList head , RLEList current
     if(currentNode->next == NULL){
         return RLE_LIST_INDEX_OUT_OF_BOUNDS;
     }
-    return RLEListRemoveWithHeadPointer(head,currentNode->next,index-currentNode->count);
+    if((void *)currentNode == (void *)previous){
+        return RLEListRemoveWithHeadPointer(head,currentNode->next,previous , index-currentNode->count);
+    }
+    return RLEListRemoveWithHeadPointer(head,currentNode->next , previous->next,index-currentNode->count);
 }
 
 RLEListResult RLEListRemove(RLEList list, int index){
@@ -126,12 +119,17 @@ RLEListResult RLEListRemove(RLEList list, int index){
     if(index < 0){
         return RLE_LIST_INDEX_OUT_OF_BOUNDS;
     }
-    return RLEListRemoveWithHeadPointer(list , list , index);
+    return RLEListRemoveWithHeadPointer(list , list, list , index);
+
 }
+
 
 char RLEListGet(RLEList list, int index, RLEListResult *result){
     if(index < 0){
-        return  RLE_LIST_INDEX_OUT_OF_BOUNDS;
+        if (result != NULL){
+            *result = RLE_LIST_INDEX_OUT_OF_BOUNDS;
+        }
+        return 0 ;
     }
     if(list == NULL){
         if (result != NULL){
@@ -140,7 +138,10 @@ char RLEListGet(RLEList list, int index, RLEListResult *result){
         return 0 ;
     }
     if(list->count ==0 && list->next == NULL){
-        return RLE_LIST_INDEX_OUT_OF_BOUNDS;
+        if (result != NULL){
+            *result = RLE_LIST_INDEX_OUT_OF_BOUNDS;
+        }
+        return 0 ;
     }
     if (list->count == 0 ){
         return RLEListGet(list->next,index,result);
@@ -164,8 +165,11 @@ char RLEListGet(RLEList list, int index, RLEListResult *result){
 
 RLEListResult RLEListMap(RLEList list, MapFunction map_function)
 {
-    if (list == NULL){
+    if (list == NULL || map_function == NULL){
         return RLE_LIST_NULL_ARGUMENT;
+    }
+    if(list->count == 0 && list->next ==NULL && list->letter == '\0'){
+        return RLE_LIST_SUCCESS;
     }
     if(list->count==0){
         return RLEListMap(list->next , map_function);
@@ -204,12 +208,18 @@ static void intToString(int number , char* buffer){
     }
     else{
         int firstDigit = number ;
+        int countPower = 0;
         while(firstDigit > 9){
+            countPower++;
             firstDigit /=10;
         }
         firstDigit +=(int)'0';
         buffer[0] = (char)firstDigit;
-        intToString(number/10, buffer+1);
+        int power = 1;
+        for (int i = 0; i < countPower; ++i) {
+            power *= 10;
+        }
+        intToString(number-power , buffer+1);
     }
 }
 

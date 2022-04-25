@@ -4,4 +4,4 @@ project(mtm_ex1 C)
 set(CMAKE_C_STANDARD 99)
 
 
-add_executable(mtm_ex1 tool/main.c tool/AsciiArtTool.h tool/AsciiArtTool.c RLEList.c RLEList.h)
+add_executable(mtm_ex1  RLEList.c RLEList.h tool/main_for_testing.c)
