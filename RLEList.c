@@ -71,7 +71,7 @@ int RLEListSize(RLEList list)
 
 static RLEListResult RLEListRemoveWithHeadPointer(RLEList head , RLEList currentNode , RLEList previous ,int index )
 {
-    if(index < 0){
+    if(index < 0 || index >=RLEListSize(head)){
         return RLE_LIST_INDEX_OUT_OF_BOUNDS;
     }
     if(index == 0 && head->count == 0){
@@ -84,7 +84,17 @@ static RLEListResult RLEListRemoveWithHeadPointer(RLEList head , RLEList current
         currentNode->count --;
         if(currentNode->count == 0){
             if(currentNode == head){
-                currentNode->letter = '\0';
+                if(currentNode->next != NULL){
+
+                    RLEList temp = currentNode->next;
+                    currentNode->letter = currentNode->next->letter;
+                    currentNode->count = currentNode->next->count ;
+                    currentNode->next = currentNode->next->next;
+                    free(temp);
+                }
+                else{
+                    currentNode->letter = '\0';
+                }
                 return RLE_LIST_SUCCESS;
             }
             if(previous!= NULL && currentNode->next !=NULL&&previous->letter == currentNode->next->letter){
@@ -116,35 +126,75 @@ RLEListResult RLEListRemove(RLEList list, int index){
     if(list == NULL){
         return RLE_LIST_NULL_ARGUMENT;
     }
-    if(index < 0){
+    if(index < 0 || index >= RLEListSize(list)){
         return RLE_LIST_INDEX_OUT_OF_BOUNDS;
     }
     return RLEListRemoveWithHeadPointer(list , list, list , index);
+    /*
+    int i = 0 ;
+    int inNode = 0;
+    RLEList temp = list ;
+    RLEList before = NULL;
+    while(inNode!= index &&  temp != NULL){
+        i++;
+        inNode++;
+        if(inNode == temp->count){
+            before = temp;
+            temp = temp->next;
+            inNode = 0 ;
+        }
+    }
+    temp->count -- ;
+    if(temp->count != 0){
+        return RLE_LIST_SUCCESS;
+    }
+    if(before == NULL){
+        RLEList nextNode = temp->next;
+        if(nextNode == NULL){
+            temp->letter = '\0';
+        }
+        else{
+            temp->letter = temp->next->letter;
+            temp->count = temp->next->count;
+            temp->next = temp->next->next;
+            free(nextNode);
+        }
+    }
+    else{
+        RLEList tempNext = temp->next ;
+        before->next = tempNext;
+        free(temp);
+        if(tempNext !=NULL && before->letter == tempNext->letter){
+            before->count += tempNext->count ;
+            before->next = tempNext->next ;
+            free(tempNext);
+        }
+    }
+    return RLE_LIST_SUCCESS;
+     */
 
 }
 
 
 char RLEListGet(RLEList list, int index, RLEListResult *result){
-    if(index < 0){
-        if (result != NULL){
-            *result = RLE_LIST_INDEX_OUT_OF_BOUNDS;
-        }
-        return 0 ;
-    }
+
     if(list == NULL){
         if (result != NULL){
             *result = RLE_LIST_NULL_ARGUMENT;
         }
         return 0 ;
     }
-    if(list->count ==0 && list->next == NULL){
+    if(index < 0 || index >= RLEListSize(list)){
         if (result != NULL){
             *result = RLE_LIST_INDEX_OUT_OF_BOUNDS;
         }
         return 0 ;
     }
-    if (list->count == 0 ){
-        return RLEListGet(list->next,index,result);
+
+    while(list != NULL && list->count <= index){
+        index -=  list->count;
+        list = list->next;
+
     }
     if(index < list->count){
         if(result != NULL){
@@ -152,14 +202,11 @@ char RLEListGet(RLEList list, int index, RLEListResult *result){
         }
         return list->letter;
     }
-    if(list->next == NULL){
-        if (result != NULL){
-            *result = RLE_LIST_INDEX_OUT_OF_BOUNDS;
-        }
-        return 0 ;
+    if (result != NULL){
+        *result = RLE_LIST_INDEX_OUT_OF_BOUNDS;
     }
+    return 0 ;
 
-    return RLEListGet(list->next,index-list->count , result );
 }
 
 
@@ -194,8 +241,8 @@ static int countNodes(RLEList list) {
 static int countSpaceForSpecificNumber(RLEList list) {
     int count=0;
     int copyNum = list->count;
-    while(copyNum!=0) {
-        copyNum = copyNum/10;
+    while(copyNum != 0) {
+        copyNum /=10;
         count++;
     }
     return count;
@@ -219,7 +266,7 @@ static void intToString(int number , char* buffer){
         for (int i = 0; i < countPower; ++i) {
             power *= 10;
         }
-        intToString(number-power , buffer+1);
+        intToString(number%power , buffer+1);
     }
 }
 
