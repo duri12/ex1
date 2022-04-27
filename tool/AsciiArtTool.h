@@ -4,7 +4,7 @@
 
 #ifndef MTM_EX1_ASCIIARTTOOL_H
 #define MTM_EX1_ASCIIARTTOOL_H
-#include "../RLEList.h"
+#include "RLEList.h"
 
 
 
